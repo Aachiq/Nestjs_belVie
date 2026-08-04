@@ -3,6 +3,10 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+
+  console.log(process.env.NODE_ENV);
+
+  // Either use a fallback like || 3000 or use ! if surely port not undefined
+  await app.listen(process.env.PORT!);
 }
 bootstrap();
