@@ -5,6 +5,8 @@ import { SignUpResponseDto } from './dto/signup-response.dto';
 import { UsersService } from 'src/users/users.service';
 import { SignInRequestDto } from './dto/signin-request.dto';
 import { SignInResponseDto } from './dto/signin-response.dto';
+import jwt from 'jsonwebtoken';
+
 
 @Injectable()
 export class AuthService {
@@ -48,8 +50,16 @@ export class AuthService {
             throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
         }
         
+        console.log('process.env.JWT_SECRET :', process.env.JWT_SECRET)
+        // Generate JWT
+        const token = jwt.sign(
+            { sub: existingUser.id, email: email },
+            process.env.JWT_SECRET,
+            { expiresIn: '1d' }, // or any expiration
+        );
+
         // here we need do instanciation required. while in dto request even it has constructor we use it 
         // directly without using new SignInRequestDTO()
-        return new SignInResponseDto(existingUser.id, existingUser.name, existingUser.email);
+        return new SignInResponseDto(existingUser.id, existingUser.name, existingUser.email, token);
     }
 }
