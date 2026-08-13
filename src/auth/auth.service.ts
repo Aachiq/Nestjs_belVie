@@ -1,40 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { SignUpRequestDto } from './dto/signup-request.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from 'src/users/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { SignUpResponseDto } from './dto/signup-response.dto';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthService {
 
-    constructor(
-        @InjectRepository(User)
-        private readonly usersRepository: Repository<User>,
-    ) { }
+    constructor(private readonly userService: UsersService) { }
 
     async register(userDto: SignUpRequestDto): Promise<SignUpResponseDto> {
         const { name, email, password } = userDto;
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const createdUser = this.usersRepository.create({
-            name,
-            email,
-            password: hashedPassword,
-        });
+        const isAlreadyExist =  await this.userService.findByEmail(email);
+        if(isAlreadyExist){
+            // Throw exception (basic exception # Nestjs Exceptions)
+            // throw new Error("User Email already exist !")
+            throw new ConflictException("User Email already exist !")
+        }
 
-        // return the DTO structure since save() return User entity
-        
-        // return this.usersRepository.save(createdUser);
-
-        const user = await this.usersRepository.save(createdUser);
+        const createdUser = await this.userService.createUser(name, email, hashedPassword);
 
         return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role
+            id: createdUser.id,
+            name: createdUser.name,
+            email: createdUser.email,
+            role: createdUser.role
         };
     }
 }
