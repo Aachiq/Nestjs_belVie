@@ -53,7 +53,7 @@ export class AuthService {
         console.log('process.env.JWT_SECRET :', process.env.JWT_SECRET)
         // Generate JWT
         const token = jwt.sign(
-            { sub: existingUser.id, email: email },
+            { sub: existingUser.id, email: email, role: existingUser.role },
             process.env.JWT_SECRET,
             { expiresIn: '1d' }, // or any expiration
         );
