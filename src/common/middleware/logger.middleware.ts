@@ -22,7 +22,15 @@ export class LoggerMiddleware implements NestMiddleware {
 
     // get requestId directly from the created middleaaree that does this reponsibility
     const requestId = req.headers['x-request-id'];
-    console.log(`[${requestId}] ${req.method} ${req.originalUrl}`);
+    // console.log(`[${requestId}] ${req.method} ${req.originalUrl}`);
+
+    const start = Date.now();
+    res.on('finish', () => {
+        console.log(Date.now() - start);
+        const duration = Date.now() - start;
+
+        console.log(`[${requestId}] - ${req.method} - ${req.originalUrl} - ${res.statusCode} - ${duration}s`);
+    });
 
     next();
   }
