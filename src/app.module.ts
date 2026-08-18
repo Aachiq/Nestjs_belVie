@@ -31,5 +31,11 @@ export class AppModule implements NestModule {
     consumer
       .apply(LoggerMiddleware)
       .forRoutes('*');  // Applies to all routes
+
+      // apply middleware on specific route with specific method
+      // .forRoutes({
+      //   path: 'auth/signin',
+      //   method: RequestMethod.POST,
+      // });
   }
 }
