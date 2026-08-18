@@ -1,4 +1,5 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import { Request, Response, NextFunction } from 'express';
 
 @Injectable()
@@ -11,6 +12,17 @@ export class LoggerMiddleware implements NestMiddleware {
       url: req.originalUrl,
       time: new Date().toISOString(),
     });
+
+    // give UniqueID to each request -> by default client send x-request-id in headers so get it else generate newOne.
+    // const requestId = req.headers['x-request-id'];
+    // const requestId = randomUUID();
+    console.log('randomUUID() :', randomUUID())
+    const requestId = req.headers['x-request-id']?.toString() ?? randomUUID();
+
+    console.log(
+      `[${requestId}] ${req.method} ${req.originalUrl}`,
+    );
+
     next();
   }
 }
