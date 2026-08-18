@@ -16,12 +16,13 @@ export class LoggerMiddleware implements NestMiddleware {
     // give UniqueID to each request -> by default client send x-request-id in headers so get it else generate newOne.
     // const requestId = req.headers['x-request-id'];
     // const requestId = randomUUID();
-    console.log('randomUUID() :', randomUUID())
-    const requestId = req.headers['x-request-id']?.toString() ?? randomUUID();
+    // console.log('randomUUID() :', randomUUID())
+    // const requestId = req.headers['x-request-id']?.toString() ?? randomUUID();
+    
 
-    console.log(
-      `[${requestId}] ${req.method} ${req.originalUrl}`,
-    );
+    // get requestId directly from the created middleaaree that does this reponsibility
+    const requestId = req.headers['x-request-id'];
+    console.log(`[${requestId}] ${req.method} ${req.originalUrl}`);
 
     next();
   }

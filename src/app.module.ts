@@ -9,6 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import dbConfig from './config/database/typeorm.config';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 
 @Module({
   imports: [
@@ -29,10 +30,10 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
 export class AppModule implements NestModule {
    configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(LoggerMiddleware)
+      .apply(RequestIdMiddleware, LoggerMiddleware)
       .forRoutes('*');  // Applies to all routes
 
-      // apply middleware on specific route with specific method
+      // apply middleware on specific route with specific
       // .forRoutes({
       //   path: 'auth/signin',
       //   method: RequestMethod.POST,
