@@ -12,6 +12,9 @@ export class AuthController {
 
     @Post('signup')
     async signup(@Body() dto: SignUpRequestDto): Promise<SignUpResponseDto> {
+        // but here logs needs to know if "user signedUp or not" not just message
+        // to do that we add logs inside service without IdRequest and if we need request ID
+        // either Context that use asyncLocalStorage or library "pino | winstom" that uses internally this.
         return this.authService.register(dto);
     }
 
