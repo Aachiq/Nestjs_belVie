@@ -11,6 +11,10 @@ export class LoggerMiddleware implements NestMiddleware {
       method: req.method,
       url: req.originalUrl,
       time: new Date().toISOString(),
+
+      // get also IP-Address & userAgent
+      ip: req.ip,
+      userAgent: req.headers['user-agent'],
     });
 
     // give UniqueID to each request -> by default client send x-request-id in headers so get it else generate newOne.
@@ -26,10 +30,9 @@ export class LoggerMiddleware implements NestMiddleware {
 
     const start = Date.now();
     res.on('finish', () => {
-        console.log(Date.now() - start);
         const duration = Date.now() - start;
 
-        console.log(`[${requestId}] - ${req.method} - ${req.originalUrl} - ${res.statusCode} - ${duration}s`);
+        console.log(`[${requestId}] - ${req.method} - ${req.originalUrl} - ${res.statusCode} - ${duration}ms`);
     });
 
     next();
