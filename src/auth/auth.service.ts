@@ -1,4 +1,4 @@
-import { ConflictException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { SignUpRequestDto } from './dto/signup-request.dto';
 import * as bcrypt from 'bcrypt';
 import { SignUpResponseDto } from './dto/signup-response.dto';
@@ -11,6 +11,9 @@ import jwt from 'jsonwebtoken';
 @Injectable()
 export class AuthService {
 
+    // instance LOagger object
+    private readonly logger = new Logger();
+
     constructor(private readonly userService: UsersService) { }
 
     async register(userDto: SignUpRequestDto): Promise<SignUpResponseDto> {
@@ -21,10 +24,19 @@ export class AuthService {
         if(isAlreadyExist){
             // Throw exception (basic exception # Nestjs Exceptions)
             // throw new Error("User Email already exist !")
+            
+            // this bellow Logger works fine but we should instance one object above and call it wherever
+            // Logger.warn('User Email Already Exist !');
+
+            this.logger.warn(`User Email Already Exist ${email} !`);
+
             throw new ConflictException("User Email already exist !")
         }
 
         const createdUser = await this.userService.createUser(name, email, hashedPassword);
+
+        // here log directly with ry catch becasue "this.userService.createUser()" throw errro and stop when it fails
+        this.logger.log(`User signed up successfully userId=${createdUser.id}`,);
 
         return {
             id: createdUser.id,
