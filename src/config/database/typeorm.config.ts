@@ -14,8 +14,9 @@ const dbConfig: TypeOrmModuleOptions = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
 
-    synchronize: true,
+    synchronize: false,
 
+    // entities: ['src/**/*.entity.ts']
     // entities: [Category, Product, User] or do "autoLoadEntities"
     autoLoadEntities: true,
 }
